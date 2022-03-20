@@ -8,12 +8,14 @@
 import UIKit
 
 class MovieListViewController: UIViewController {
+    public var interactor: MovieListBusinessLogic!
     private let tableView = UITableView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         configureUI()
+        interactor.fetchMovies()
     }
     
     private func configureUI() {

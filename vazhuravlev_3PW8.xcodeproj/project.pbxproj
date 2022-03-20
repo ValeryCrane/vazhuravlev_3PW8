@@ -13,6 +13,8 @@
 		4864D93627E7384C005B05E9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4864D93527E7384C005B05E9 /* Assets.xcassets */; };
 		4864D93927E7384C005B05E9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4864D93727E7384C005B05E9 /* LaunchScreen.storyboard */; };
 		4864D94527E73B2B005B05E9 /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4864D94427E73B2B005B05E9 /* MovieCell.swift */; };
+		4864D94B27E7494A005B05E9 /* MovieListInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4864D94A27E7494A005B05E9 /* MovieListInteractor.swift */; };
+		4864D94E27E751A8005B05E9 /* MovieListAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4864D94D27E751A8005B05E9 /* MovieListAssembly.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +27,8 @@
 		4864D93A27E7384C005B05E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4864D94427E73B2B005B05E9 /* MovieCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
 		4864D94827E748E8005B05E9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		4864D94A27E7494A005B05E9 /* MovieListInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListInteractor.swift; sourceTree = "<group>"; };
+		4864D94D27E751A8005B05E9 /* MovieListAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListAssembly.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +77,8 @@
 			children = (
 				4864D94427E73B2B005B05E9 /* MovieCell.swift */,
 				4864D93027E7384A005B05E9 /* MovieListViewController.swift */,
+				4864D94A27E7494A005B05E9 /* MovieListInteractor.swift */,
+				4864D94D27E751A8005B05E9 /* MovieListAssembly.swift */,
 			);
 			path = MovieListScene;
 			sourceTree = "<group>";
@@ -148,6 +154,8 @@
 			files = (
 				4864D93127E7384A005B05E9 /* MovieListViewController.swift in Sources */,
 				4864D92D27E7384A005B05E9 /* AppDelegate.swift in Sources */,
+				4864D94E27E751A8005B05E9 /* MovieListAssembly.swift in Sources */,
+				4864D94B27E7494A005B05E9 /* MovieListInteractor.swift in Sources */,
 				4864D94527E73B2B005B05E9 /* MovieCell.swift in Sources */,
 				4864D92F27E7384A005B05E9 /* SceneDelegate.swift in Sources */,
 			);
