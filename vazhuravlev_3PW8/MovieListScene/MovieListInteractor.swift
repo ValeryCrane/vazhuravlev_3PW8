@@ -8,8 +8,8 @@
 import Foundation
 
 protocol MovieListBusinessLogic {
-    func fetchMovies()                                      // Fetches one page of movies.
-    func searchMovies(query: String)                        // Fethces one page of certain movies.
+    func fetchMovies(page: Int)                             // Fetches one page of movies.
+    func searchMovies(query: String, page: Int)             // Fethces one page of certain movies.
     func fetchPoster(movieId: Int, posterPath: String)      // Fetches a poster.
 }
 
@@ -28,9 +28,9 @@ class MovieListInteractor {
 
 // MARK: - MovieListBusinessLogic implementation
 extension MovieListInteractor: MovieListBusinessLogic {
-    func fetchMovies() {
+    func fetchMovies(page: Int) {
         guard let url = URL(
-                string: "https://api.themoviedb.org/3/discover/movie?api_key=\(Self.apiKey)&language=ruRu")
+                string: "https://api.themoviedb.org/3/discover/movie?api_key=\(Self.apiKey)&language=ruRu&page=\(page)")
         else { return }
         
         cancelAllSharedTasks()
@@ -44,9 +44,9 @@ extension MovieListInteractor: MovieListBusinessLogic {
         task.resume()
     }
     
-    func searchMovies(query: String) {
+    func searchMovies(query: String, page: Int) {
         guard let url = URL(string:
-            "https://api.themoviedb.org/3/search/movie?api_key=\(Self.apiKey)&language=ruRu&query=\(query.replacingOccurrences(of: " ", with: "%20"))")
+            "https://api.themoviedb.org/3/search/movie?api_key=\(Self.apiKey)&language=ruRu&query=\(query.replacingOccurrences(of: " ", with: "%20"))&page=\(page)")
         else { return }
         
         cancelAllSharedTasks()

@@ -8,8 +8,8 @@
 import UIKit
 
 protocol MovieListDisplayLogic: AnyObject {
-    func displayMovies(movies: [PresentedMovie])            // Displays one page of movies.
-    func displayPoster(movieId: Int, poster: UIImage)       // Displays poster for one movie.
+    func displayMovies(movies: [PresentedMovie], totalPages: Int)       // Displays one page of movies.
+    func displayPoster(movieId: Int, poster: UIImage)                   // Displays poster for one movie.
 }
 
 class MovieListViewController: UIViewController {
@@ -17,6 +17,8 @@ class MovieListViewController: UIViewController {
     private let tableView = UITableView()
     private let searchField = UITextField()
     private let activityIndicator = UIActivityIndicatorView()
+    private let pageStepper = UIStepper()
+    private let pageLabel = UILabel()
     private var movies: [PresentedMovie] = [] {
         didSet {
             tableView.reloadData()
@@ -30,8 +32,10 @@ class MovieListViewController: UIViewController {
         configureUI()
         activityIndicator.startAnimating()
         tableView.isHidden = true
+        pageStepper.value = 1
+        pageLabel.text = "1"
         DispatchQueue.global(qos: .background).async { [weak self] in
-            self?.interactor.fetchMovies()
+            self?.interactor.fetchMovies(page: 1)
         }
     }
     
@@ -56,6 +60,16 @@ class MovieListViewController: UIViewController {
         activityIndicator.hidesWhenStopped = true
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(activityIndicator)
+        pageStepper.minimumValue = 1
+        pageStepper.maximumValue = .infinity
+        pageStepper.value = 1
+        view.addSubview(pageStepper)
+        pageStepper.translatesAutoresizingMaskIntoConstraints = false
+        pageStepper.addTarget(self, action: #selector(pageChanged), for: .valueChanged)
+        view.addSubview(pageLabel)
+        pageLabel.translatesAutoresizingMaskIntoConstraints = false
+        pageLabel.font = .systemFont(ofSize: 24)
+        pageLabel.text = "1"
         NSLayoutConstraint.activate([
             searchField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
             searchField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
@@ -69,7 +83,13 @@ class MovieListViewController: UIViewController {
             tableView.topAnchor.constraint(equalTo: separator.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: pageStepper.topAnchor, constant: -32),
+            
+            pageStepper.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            pageStepper.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            
+            pageLabel.centerYAnchor.constraint(equalTo: pageStepper.centerYAnchor),
+            pageLabel.trailingAnchor.constraint(equalTo: pageStepper.leadingAnchor, constant: -16),
             
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
@@ -80,12 +100,30 @@ class MovieListViewController: UIViewController {
     @objc private func makeSearch() {
         activityIndicator.startAnimating()
         tableView.isHidden = true
+        pageStepper.value = 1
+        pageLabel.text = "1"
         let query = self.searchField.text
         DispatchQueue.global(qos: .background).async { [weak self] in
             if let query = query, !query.isEmpty {
-                self?.interactor.searchMovies(query: query)
+                self?.interactor.searchMovies(query: query, page: 1)
             } else {
-                self?.interactor.fetchMovies()
+                self?.interactor.fetchMovies(page: 1)
+            }
+        }
+    }
+    
+    // Changes page by pageStepper
+    @objc private func pageChanged() {
+        let page = Int(pageStepper.value)
+        pageLabel.text = "\(page)"
+        activityIndicator.startAnimating()
+        tableView.isHidden = true
+        let query = self.searchField.text
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            if let query = query, !query.isEmpty {
+                self?.interactor.searchMovies(query: query, page: page)
+            } else {
+                self?.interactor.fetchMovies(page: page)
             }
         }
     }
@@ -119,9 +157,10 @@ extension MovieListViewController: UITextFieldDelegate {
 
 // MARK: - MovieListDisplayLogic implementation
 extension MovieListViewController: MovieListDisplayLogic {
-    func displayMovies(movies: [PresentedMovie]) {
+    func displayMovies(movies: [PresentedMovie], totalPages: Int) {
         DispatchQueue.main.async { [weak self] in
             self?.activityIndicator.stopAnimating()
+            self?.pageStepper.maximumValue = Double(totalPages)
             if movies.count != 0 {
                 self?.tableView.isHidden = false
             }

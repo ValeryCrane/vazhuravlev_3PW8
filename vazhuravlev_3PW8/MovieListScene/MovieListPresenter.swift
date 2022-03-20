@@ -20,7 +20,9 @@ class MovieListPresenter {
 // MARK: - MovieListPresentationLogic implementation
 extension MovieListPresenter: MovieListPresentationLogic {
     func presentMovies(data: [String: Any]) {
-        guard let results = data["results"] as? [[String: Any]] else { return }
+        guard let results = data["results"] as? [[String: Any]],
+              let totalPages = data["total_pages"] as? Int
+        else { return }
         let movies: [PresentedMovie] = results.compactMap { params in
             let title = params["title"] as? String
             let posterPath = params["poster_path"] as? String
@@ -31,7 +33,7 @@ extension MovieListPresenter: MovieListPresentationLogic {
                 return nil
             }
         }
-        view.displayMovies(movies: movies)
+        view.displayMovies(movies: movies, totalPages: totalPages)
     }
     
     func presentPoster(movieId: Int, imageData: Data) {

@@ -9,3 +9,5 @@
 - Movies poster showing after loading all of them
 
 - User can search movies using TMDB Api. If user write new symbol in search text input we stop previous request and send new.
+
+- View controller with paging using list of pages (1, 2, 3...) (UIStepper)
