@@ -10,7 +10,7 @@ import UIKit
 
 protocol MovieListPresentationLogic {
     func presentMovies(data: [String: Any])             // Converts movies to [PresentedMovie].
-    func presentImage(movieId: Int, imageData: Data)    // Presents image to view.
+    func presentPoster(movieId: Int, imageData: Data)    // Presents image to view.
 }
 
 class MovieListPresenter {
@@ -34,7 +34,7 @@ extension MovieListPresenter: MovieListPresentationLogic {
         view.displayMovies(movies: movies)
     }
     
-    func presentImage(movieId: Int, imageData: Data) {
+    func presentPoster(movieId: Int, imageData: Data) {
         guard let image = UIImage(data: imageData) else { return }
         self.view.displayPoster(movieId: movieId, poster: image)
     }

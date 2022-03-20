@@ -14,9 +14,9 @@ protocol MovieListDisplayLogic: AnyObject {
 
 class MovieListViewController: UIViewController {
     public var interactor: MovieListBusinessLogic!
-    private var dispatchGroup: DispatchGroup?
     private let tableView = UITableView()
-    private var posters: [UIImage?] = []
+    private let searchField = UITextField()
+    private let activityIndicator = UIActivityIndicatorView()
     private var movies: [PresentedMovie] = [] {
         didSet {
             tableView.reloadData()
@@ -28,6 +28,8 @@ class MovieListViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         configureUI()
+        activityIndicator.startAnimating()
+        tableView.isHidden = true
         DispatchQueue.global(qos: .background).async { [weak self] in
             self?.interactor.fetchMovies()
         }
@@ -36,22 +38,55 @@ class MovieListViewController: UIViewController {
     
     // MARK: - setup functions
     private func configureUI() {
+        let separator = UIView()
+        separator.backgroundColor = .systemGray4
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(separator)
+        view.addSubview(searchField)
+        searchField.translatesAutoresizingMaskIntoConstraints = false
+        searchField.placeholder = "Search"
+        searchField.font = .systemFont(ofSize: 24)
+        searchField.delegate = self
+        searchField.addTarget(self, action: #selector(makeSearch), for: .editingChanged)
         view.addSubview(tableView)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(MovieCell.self, forCellReuseIdentifier: MovieCell.reuseIdentifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(activityIndicator)
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            searchField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+            searchField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
+            searchField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
+            
+            separator.topAnchor.constraint(equalTo: searchField.bottomAnchor, constant: 32),
+            separator.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            separator.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            separator.heightAnchor.constraint(equalToConstant: 2),
+            
+            tableView.topAnchor.constraint(equalTo: separator.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
-    private func showAllPosters() {
-        for i in 0..<movies.count {
-            movies[i].poster = posters[i]
+    // Making search by query
+    @objc private func makeSearch() {
+        activityIndicator.startAnimating()
+        tableView.isHidden = true
+        let query = self.searchField.text
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            if let query = query, !query.isEmpty {
+                self?.interactor.searchMovies(query: query)
+            } else {
+                self?.interactor.fetchMovies()
+            }
         }
     }
 
@@ -73,22 +108,28 @@ extension MovieListViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - UITextFieldDelegate implementation
+extension MovieListViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+}
+
 
 // MARK: - MovieListDisplayLogic implementation
 extension MovieListViewController: MovieListDisplayLogic {
     func displayMovies(movies: [PresentedMovie]) {
         DispatchQueue.main.async { [weak self] in
+            self?.activityIndicator.stopAnimating()
+            if movies.count != 0 {
+                self?.tableView.isHidden = false
+            }
             self?.movies = movies
-            self?.dispatchGroup = DispatchGroup()
-            self?.posters = [UIImage?](repeating: UIImage(), count: movies.count)
             for movie in movies {
-                self?.dispatchGroup?.enter()
                 DispatchQueue.global(qos: .background).async { [weak self] in
                     self?.interactor.fetchPoster(movieId: movie.id, posterPath: movie.posterPath)
                 }
-            }
-            self?.dispatchGroup?.notify(queue: .main) { [weak self] in
-                self?.showAllPosters()
             }
         }
     }
@@ -97,8 +138,7 @@ extension MovieListViewController: MovieListDisplayLogic {
         DispatchQueue.main.async { [weak self] in
             for i in 0..<(self?.movies.count ?? 0) {
                 if self?.movies[i].id == movieId {
-                    self?.posters[i] = poster
-                    self?.dispatchGroup?.leave()
+                    self?.movies[i].poster = poster
                 }
             }
         }
