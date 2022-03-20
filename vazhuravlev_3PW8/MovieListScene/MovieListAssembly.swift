@@ -14,10 +14,13 @@ class MovieListAssembly {
         let view = MovieListViewController()
         let interactor = MovieListInteractor()
         let presenter = MovieListPresenter()
+        let router = MovieListRouter()
         
         view.interactor = interactor
         interactor.presenter = presenter
         presenter.view = view
+        view.router = router
+        router.view = view
         
         return view
     }

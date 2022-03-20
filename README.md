@@ -13,3 +13,5 @@
 - View controller with paging using list of pages (1, 2, 3...) (UIStepper)
 
 - View controller with next page loading on table view scroll
+
+- Allow user to explore simple movie with it information from TMDB Api

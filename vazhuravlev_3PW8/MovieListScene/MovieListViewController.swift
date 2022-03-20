@@ -14,6 +14,7 @@ protocol MovieListDisplayLogic: AnyObject {
 
 class MovieListViewController: UIViewController {
     public var interactor: MovieListBusinessLogic!
+    public var router: MovieListRoutingLogic!
     private var lastPageDownloaded = 1
     private var totalPages = 0
     private let tableView = UITableView()
@@ -28,6 +29,7 @@ class MovieListViewController: UIViewController {
     // MARK: - ViewController's life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "Movies"
         view.backgroundColor = .white
         configureUI()
         activityIndicator.startAnimating()
@@ -113,7 +115,12 @@ class MovieListViewController: UIViewController {
 
 
 // MARK: - UITableViewDelegate & DataSource implementation
-extension MovieListViewController: UITableViewDelegate { }
+extension MovieListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        router.routeToMovie(movieId: movies[indexPath.row].id)
+        tableView.deselectRow(at: indexPath, animated: false)
+    }
+}
 
 extension MovieListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
