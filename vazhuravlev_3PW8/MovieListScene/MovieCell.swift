@@ -18,8 +18,10 @@ class MovieCell: UITableViewCell {
         configureUI()
     }
     
+    // Layouts and configures UI elements.
     private func configureUI() {
         poster.translatesAutoresizingMaskIntoConstraints = false
+        poster.contentMode = .scaleToFill
         title.translatesAutoresizingMaskIntoConstraints = false
         addSubview(poster)
         addSubview(title)
@@ -33,12 +35,12 @@ class MovieCell: UITableViewCell {
             title.topAnchor.constraint(equalTo: poster.bottomAnchor, constant: 10),
             title.leadingAnchor.constraint(equalTo: leadingAnchor),
             title.trailingAnchor.constraint(equalTo: trailingAnchor),
-            title.heightAnchor.constraint(equalToConstant: 20),
             title.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10)
         ])
         title.textAlignment = .center
     }
     
+    // Configures cell based on given data.
     func configure(movie: PresentedMovie) {
         title.text = movie.title
         poster.image = movie.poster

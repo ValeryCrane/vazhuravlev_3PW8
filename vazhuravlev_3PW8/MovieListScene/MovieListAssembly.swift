@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+// Assembles MovieListScene
 class MovieListAssembly {
     func assemble() -> UIViewController {
         let view = MovieListViewController()

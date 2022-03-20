@@ -8,8 +8,10 @@
 import Foundation
 import UIKit
 
+// Struct for movie information after its presentation
 struct PresentedMovie {
+    let id: Int
     let title: String
     let posterPath: String
-    let poster: UIImage?
+    var poster: UIImage?
 }

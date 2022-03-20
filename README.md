@@ -6,3 +6,5 @@
 
 - App can parse data given via Api and show it on table view
 
+- Movies poster showing after loading all of them
+
