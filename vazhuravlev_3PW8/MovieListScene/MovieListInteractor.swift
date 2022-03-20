@@ -33,7 +33,9 @@ extension MovieListInteractor: MovieListBusinessLogic {
                 string: "https://api.themoviedb.org/3/discover/movie?api_key=\(Self.apiKey)&language=ruRu&page=\(page)")
         else { return }
         
-        cancelAllSharedTasks()
+        if page == 1 {
+            cancelAllSharedTasks()
+        }
         let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { [weak self] data, _, _ in
             if let data = data,
                let dictionary = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
@@ -49,7 +51,9 @@ extension MovieListInteractor: MovieListBusinessLogic {
             "https://api.themoviedb.org/3/search/movie?api_key=\(Self.apiKey)&language=ruRu&query=\(query.replacingOccurrences(of: " ", with: "%20"))&page=\(page)")
         else { return }
         
-        cancelAllSharedTasks()
+        if page == 1 {
+            cancelAllSharedTasks()
+        }
         let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { [weak self] data, _, _ in
             if let data = data,
                let dictionary = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {

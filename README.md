@@ -11,3 +11,5 @@
 - User can search movies using TMDB Api. If user write new symbol in search text input we stop previous request and send new.
 
 - View controller with paging using list of pages (1, 2, 3...) (UIStepper)
+
+- View controller with next page loading on table view scroll
