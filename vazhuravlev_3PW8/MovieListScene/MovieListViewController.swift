@@ -7,9 +7,18 @@
 
 import UIKit
 
+protocol MovieListDisplayLogic: AnyObject {
+    func displayMovies(movies: [PresentedMovie])
+}
+
 class MovieListViewController: UIViewController {
     public var interactor: MovieListBusinessLogic!
     private let tableView = UITableView()
+    private var movies: [PresentedMovie] = [] {
+        didSet {
+            tableView.reloadData()
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,12 +47,19 @@ extension MovieListViewController: UITableViewDelegate { }
 
 extension MovieListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        1
+        movies.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MovieCell.reuseIdentifier) as? MovieCell
+        cell?.configure(movie: movies[indexPath.row])
         return cell ?? UITableViewCell()
+    }
+}
+
+extension MovieListViewController: MovieListDisplayLogic {
+    func displayMovies(movies: [PresentedMovie]) {
+        self.movies = movies
     }
 }
 

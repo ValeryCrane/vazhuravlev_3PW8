@@ -33,9 +33,15 @@ class MovieCell: UITableViewCell {
             title.topAnchor.constraint(equalTo: poster.bottomAnchor, constant: 10),
             title.leadingAnchor.constraint(equalTo: leadingAnchor),
             title.trailingAnchor.constraint(equalTo: trailingAnchor),
-            poster.heightAnchor.constraint(equalToConstant: 20)
+            title.heightAnchor.constraint(equalToConstant: 20),
+            title.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10)
         ])
         title.textAlignment = .center
+    }
+    
+    func configure(movie: PresentedMovie) {
+        title.text = movie.title
+        poster.image = movie.poster
     }
     
     required init?(coder: NSCoder) {

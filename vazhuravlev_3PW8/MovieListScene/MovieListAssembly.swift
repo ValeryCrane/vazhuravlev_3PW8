@@ -12,8 +12,11 @@ class MovieListAssembly {
     func assemble() -> UIViewController {
         let view = MovieListViewController()
         let interactor = MovieListInteractor()
+        let presenter = MovieListPresenter()
         
         view.interactor = interactor
+        interactor.presenter = presenter
+        presenter.view = view
         
         return view
     }

@@ -15,6 +15,8 @@
 		4864D94527E73B2B005B05E9 /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4864D94427E73B2B005B05E9 /* MovieCell.swift */; };
 		4864D94B27E7494A005B05E9 /* MovieListInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4864D94A27E7494A005B05E9 /* MovieListInteractor.swift */; };
 		4864D94E27E751A8005B05E9 /* MovieListAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4864D94D27E751A8005B05E9 /* MovieListAssembly.swift */; };
+		4864D95127E75325005B05E9 /* PresentedMovie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4864D95027E75325005B05E9 /* PresentedMovie.swift */; };
+		4864D95527E755BC005B05E9 /* MovieListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4864D95427E755BB005B05E9 /* MovieListPresenter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +31,8 @@
 		4864D94827E748E8005B05E9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		4864D94A27E7494A005B05E9 /* MovieListInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListInteractor.swift; sourceTree = "<group>"; };
 		4864D94D27E751A8005B05E9 /* MovieListAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListAssembly.swift; sourceTree = "<group>"; };
+		4864D95027E75325005B05E9 /* PresentedMovie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentedMovie.swift; sourceTree = "<group>"; };
+		4864D95427E755BB005B05E9 /* MovieListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListPresenter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,9 +79,11 @@
 		4864D94227E73A7C005B05E9 /* MovieListScene */ = {
 			isa = PBXGroup;
 			children = (
+				4864D95027E75325005B05E9 /* PresentedMovie.swift */,
 				4864D94427E73B2B005B05E9 /* MovieCell.swift */,
 				4864D93027E7384A005B05E9 /* MovieListViewController.swift */,
 				4864D94A27E7494A005B05E9 /* MovieListInteractor.swift */,
+				4864D95427E755BB005B05E9 /* MovieListPresenter.swift */,
 				4864D94D27E751A8005B05E9 /* MovieListAssembly.swift */,
 			);
 			path = MovieListScene;
@@ -156,8 +162,10 @@
 				4864D92D27E7384A005B05E9 /* AppDelegate.swift in Sources */,
 				4864D94E27E751A8005B05E9 /* MovieListAssembly.swift in Sources */,
 				4864D94B27E7494A005B05E9 /* MovieListInteractor.swift in Sources */,
+				4864D95127E75325005B05E9 /* PresentedMovie.swift in Sources */,
 				4864D94527E73B2B005B05E9 /* MovieCell.swift in Sources */,
 				4864D92F27E7384A005B05E9 /* SceneDelegate.swift in Sources */,
+				4864D95527E755BC005B05E9 /* MovieListPresenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

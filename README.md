@@ -4,3 +4,5 @@
 
 - App can send request to TMDB Api
 
+- App can parse data given via Api and show it on table view
+
