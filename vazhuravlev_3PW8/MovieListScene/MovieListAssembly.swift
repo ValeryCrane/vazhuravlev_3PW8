@@ -21,6 +21,7 @@ class MovieListAssembly {
         presenter.view = view
         view.router = router
         router.view = view
+        router.sortingTypeDataStore = interactor
         
         return view
     }

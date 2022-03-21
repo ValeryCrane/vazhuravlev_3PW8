@@ -8,11 +8,12 @@
 import Foundation
 
 protocol MovieDataStore: AnyObject {
-    var movieId: Int? { get set }              // Given movie id.
+    var movieId: Int? { get set }               // Given movie id.
 }
 
 protocol MovieBusinessLogic {
-    func fetchInfo()
+    func fetchInfo()                            // Fetches info about movie.
+    func fetchPoster(posterPath: String)        // Fetches movie poster.
 }
 
 class MovieInteractor: MovieDataStore {
@@ -21,6 +22,7 @@ class MovieInteractor: MovieDataStore {
     var movieId: Int?
 }
 
+// MARK: - MovieBusinessLogic implementation
 extension MovieInteractor: MovieBusinessLogic {
     func fetchInfo() {
         guard
@@ -36,4 +38,13 @@ extension MovieInteractor: MovieBusinessLogic {
         }
         task.resume()
     }
+    
+    func fetchPoster(posterPath: String) {
+            guard let url = URL(string: "https://image.tmdb.org/t/p/original/\(posterPath)") else { return }
+            let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { [weak self] data, _, _ in
+                guard let data = data else { return }
+                self?.presenter?.presentPoster(imageData: data)
+            }
+            task.resume()
+        }
 }

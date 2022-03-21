@@ -13,8 +13,9 @@ protocol MovieListDisplayLogic: AnyObject {
 }
 
 class MovieListViewController: UIViewController {
-    public var interactor: MovieListBusinessLogic!
+    public var interactor: (MovieListBusinessLogic & SortingTypeDataStore)!
     public var router: MovieListRoutingLogic!
+    private var currentSortingType = "popularity.desc"
     private var lastPageDownloaded = 1
     private var totalPages = 0
     private let tableView = UITableView()
@@ -36,6 +37,26 @@ class MovieListViewController: UIViewController {
         tableView.isHidden = true
         DispatchQueue.global(qos: .background).async { [weak self] in
             self?.interactor.fetchMovies(page: 1)
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if currentSortingType != interactor.sortingType {
+            currentSortingType = interactor.sortingType
+            lastPageDownloaded = 1
+            totalPages = 0
+            movies = []
+            activityIndicator.startAnimating()
+            tableView.isHidden = true
+            let query = self.searchField.text
+            DispatchQueue.global(qos: .background).async { [weak self] in
+                if let query = query, !query.isEmpty {
+                    self?.interactor.searchMovies(query: query, page: 1)
+                } else {
+                    self?.interactor.fetchMovies(page: 1)
+                }
+            }
         }
     }
     
@@ -79,6 +100,9 @@ class MovieListViewController: UIViewController {
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
+        
+        navigationItem.rightBarButtonItem =
+            UIBarButtonItem(title: "Settings", style: .done, target: self, action: #selector(openSortChoice))
     }
     
     private func configureLoadingCell() -> UIView {
@@ -109,6 +133,10 @@ class MovieListViewController: UIViewController {
                 self?.interactor.fetchMovies(page: 1)
             }
         }
+    }
+    
+    @objc private func openSortChoice() {
+        router.routeToSortChoice()
     }
 
 }

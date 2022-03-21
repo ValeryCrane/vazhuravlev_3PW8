@@ -9,26 +9,32 @@ import Foundation
 import UIKit
 
 protocol MovieDisplayLogic: AnyObject {
-    func displayInfo(title: String, genres: String, popularity: String)
+    // Displays info about movie.
+    func displayInfo(title: String, genres: String, popularity: String, posterPath: String)
+    func displayPoster(poster: UIImage)     // Displays movie's poster.
 }
 
 class MovieViewController: UIViewController {
     public var interactor: MovieBusinessLogic!
+    private var poster: UIImageView?
     private var titleLabel: UILabel?
     private var genresLabel: UILabel?
     private var popularityLabel: UILabel?
     
+    // MARK: - ViewController's life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Movie"
         view.backgroundColor = .white
-        layoutUI()
+        layoutPoster()
+        layoutProps()
         DispatchQueue.global(qos: .background).async { [weak self] in
             self?.interactor.fetchInfo()
         }
     }
     
-    private func layoutUI() {
+    // MARK: - layout functions
+    private func layoutProps() {
         let propsStack = UIStackView()
         propsStack.axis = .vertical
         propsStack.translatesAutoresizingMaskIntoConstraints = false
@@ -43,7 +49,7 @@ class MovieViewController: UIViewController {
         propsStack.addArrangedSubview(popularityWrapper)
         
         NSLayoutConstraint.activate([
-            propsStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+            propsStack.topAnchor.constraint(equalTo: view.centerYAnchor, constant: 32),
             propsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
             propsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
             
@@ -55,9 +61,26 @@ class MovieViewController: UIViewController {
             popularityWrapper.trailingAnchor.constraint(equalTo: propsStack.trailingAnchor)
         ])
         
+        
         self.titleLabel = titleLabel
         self.genresLabel = genresLabel
         self.popularityLabel = popularityLabel
+    }
+    
+    private func layoutPoster() {
+        let poster = UIImageView()
+        poster.contentMode = .scaleAspectFit
+        poster.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(poster)
+        
+        NSLayoutConstraint.activate([
+            poster.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            poster.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            poster.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            poster.bottomAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+        
+        self.poster = poster
     }
     
     private func createPropsView(title: String) -> (UILabel, UIView) {
@@ -91,12 +114,22 @@ class MovieViewController: UIViewController {
     }
 }
 
+// MARK: - MovieDisplayLogic implementation
 extension MovieViewController: MovieDisplayLogic {
-    func displayInfo(title: String, genres: String, popularity: String) {
+    func displayInfo(title: String, genres: String, popularity: String, posterPath: String) {
         DispatchQueue.main.async { [weak self] in
             self?.titleLabel?.text = title
             self?.genresLabel?.text = genres
             self?.popularityLabel?.text = popularity
+        }
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            self?.interactor.fetchPoster(posterPath: posterPath)
+        }
+    }
+    
+    func displayPoster(poster: UIImage) {
+        DispatchQueue.main.async { [weak self] in
+            self?.poster?.image = poster
         }
     }
 }

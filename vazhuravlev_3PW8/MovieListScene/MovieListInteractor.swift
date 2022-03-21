@@ -13,10 +13,15 @@ protocol MovieListBusinessLogic {
     func fetchPoster(movieId: Int, posterPath: String)      // Fetches a poster.
 }
 
-class MovieListInteractor {
+protocol SortingTypeDataStore: AnyObject {
+    var sortingType: String { get set }                     // How to sort a movie.
+}
+
+class MovieListInteractor:SortingTypeDataStore {
     public var presenter: MovieListPresentationLogic!
     private static let apiKey = "d61da1ef04f1834074b116b6d36f799e"
     private var urlSession: URLSession?
+    public var sortingType: String = "popularity.desc"
     
     // Cancels all tasks in URLSession.shared
     private func cancelAllSharedTasks() {
@@ -30,7 +35,7 @@ class MovieListInteractor {
 extension MovieListInteractor: MovieListBusinessLogic {
     func fetchMovies(page: Int) {
         guard let url = URL(
-                string: "https://api.themoviedb.org/3/discover/movie?api_key=\(Self.apiKey)&language=ruRu&page=\(page)")
+                string: "https://api.themoviedb.org/3/discover/movie?api_key=\(Self.apiKey)&language=ruRu&sort_by=\(sortingType)&page=\(page)")
         else { return }
         
         if page == 1 {
@@ -48,7 +53,7 @@ extension MovieListInteractor: MovieListBusinessLogic {
     
     func searchMovies(query: String, page: Int) {
         guard let url = URL(string:
-            "https://api.themoviedb.org/3/search/movie?api_key=\(Self.apiKey)&language=ruRu&query=\(query.replacingOccurrences(of: " ", with: "%20"))&page=\(page)")
+            "https://api.themoviedb.org/3/search/movie?api_key=\(Self.apiKey)&language=ruRu&query=\(query.replacingOccurrences(of: " ", with: "%20"))&sort_by=\(sortingType)&page=\(page)")
         else { return }
         
         if page == 1 {

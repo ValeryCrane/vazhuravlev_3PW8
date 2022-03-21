@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+// Assembles view with movie description.
 class MovieAssembly {
     func assemble(movieId: Int) -> UIViewController {
         let view = MovieViewController()
