@@ -8,18 +8,21 @@
 import Foundation
 import UIKit
 
+// This view makes choice of sortiong of moview possible.
 class SortChoiceViewController: UIViewController {
     public weak var sortingTypeDataStore: SortingTypeDataStore!
     private var picker: UIPickerView?
     private var sortingTitles = ["by popularity", "by revenue", "by date"]
     private var sortingTypes = ["popularity.desc", "revenue.desc", "primary_release_date.desc"]
     
+    // MARK: - ViewController's life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         configurePicker()
     }
     
+    // MARK: - setup functions
     private func configurePicker() {
         let picker = UIPickerView()
         picker.delegate = self
@@ -41,6 +44,8 @@ class SortChoiceViewController: UIViewController {
     }
 }
 
+
+// MARK: - UIPickerViewDelegate & DataSource implementation
 extension SortChoiceViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         sortingTypeDataStore.sortingType = sortingTypes[row]

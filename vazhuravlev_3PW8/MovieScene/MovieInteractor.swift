@@ -40,11 +40,11 @@ extension MovieInteractor: MovieBusinessLogic {
     }
     
     func fetchPoster(posterPath: String) {
-            guard let url = URL(string: "https://image.tmdb.org/t/p/original/\(posterPath)") else { return }
-            let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { [weak self] data, _, _ in
-                guard let data = data else { return }
-                self?.presenter?.presentPoster(imageData: data)
-            }
-            task.resume()
+        guard let url = URL(string: "https://image.tmdb.org/t/p/original/\(posterPath)") else { return }
+        let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { [weak self] data, _, _ in
+            guard let data = data else { return }
+            self?.presenter?.presentPoster(imageData: data)
         }
+        task.resume()
+    }
 }

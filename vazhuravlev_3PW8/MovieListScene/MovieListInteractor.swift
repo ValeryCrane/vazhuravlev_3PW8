@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 
 protocol MovieListBusinessLogic {
     func fetchMovies(page: Int)                             // Fetches one page of movies.
@@ -18,6 +19,7 @@ protocol SortingTypeDataStore: AnyObject {
 }
 
 class MovieListInteractor:SortingTypeDataStore {
+    public static let posterStoreName = "PosterCoreData"
     public var presenter: MovieListPresentationLogic!
     private static let apiKey = "d61da1ef04f1834074b116b6d36f799e"
     private var urlSession: URLSession?
@@ -28,6 +30,46 @@ class MovieListInteractor:SortingTypeDataStore {
         URLSession.shared.getAllTasks { tasks in
             tasks.forEach { $0.cancel() }
         }
+    }
+    
+    // MARK: - CoreData
+    // Initializing context
+    private static let context: NSManagedObjectContext = {
+        // Creationg persistantContainer, loadingStores and returning context.
+        let container = NSPersistentContainer(name: MovieListInteractor.posterStoreName)
+        container.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("Container loading failed")
+            }
+        }
+        return container.newBackgroundContext()
+    }()
+    
+    // Method saves changes in context.
+    private static func saveChanges() {
+        if Self.context.hasChanges {
+            try? Self.context.save()
+        }
+    }
+    
+    // Method adds poster to CoreData
+    private func addPosterCoreData(movieId: Int, poster: Data) {
+        let corePoster = Poster(context: Self.context)
+        corePoster.image = poster
+        corePoster.movieId = Int32(movieId)
+        Self.saveChanges()
+    }
+    
+    // Method gets poster from CoreData
+    private func getPosterCoreData(movieId: Int) -> Data? {
+        let fetchRequest: NSFetchRequest<Poster> = Poster.fetchRequest()
+        guard let posters = try? Self.context.fetch(fetchRequest) else { return nil }
+        for poster in posters {
+            if poster.movieId == Int32(movieId) {
+                return poster.image
+            }
+        }
+        return nil
     }
 }
 
@@ -70,9 +112,15 @@ extension MovieListInteractor: MovieListBusinessLogic {
     }
     
     func fetchPoster(movieId: Int, posterPath: String) {
+        if let image = getPosterCoreData(movieId: movieId) {
+            self.presenter?.presentPoster(movieId: movieId, imageData: image)
+            print("Got movie from core data")
+            return
+        }
         guard let url = URL(string: "https://image.tmdb.org/t/p/original/\(posterPath)") else { return }
         let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { [weak self] data, _, _ in
             guard let data = data else { return }
+            self?.addPosterCoreData(movieId: movieId, poster: data)
             self?.presenter?.presentPoster(movieId: movieId, imageData: data)
         }
         task.resume()

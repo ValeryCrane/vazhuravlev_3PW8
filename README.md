@@ -17,3 +17,5 @@
 - Allow user to explore simple movie with it information from TMDB Api
 
 - Added possibility to select type of sort movies for request
+
+- Saving movies data local. If movie poster loaded earlier taking it from local, not from network
