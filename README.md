@@ -15,3 +15,5 @@
 - View controller with next page loading on table view scroll
 
 - Allow user to explore simple movie with it information from TMDB Api
+
+- Added possibility to select type of sort movies for request
